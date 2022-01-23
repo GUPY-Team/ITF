@@ -1,12 +1,3 @@
-﻿using System;
+﻿using FakeData;
+FakeDataInitializer.Init(2, true);
 
-namespace FakeData
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            FakeDataInitializer.Init(2, true);
-        }
-    }
-}

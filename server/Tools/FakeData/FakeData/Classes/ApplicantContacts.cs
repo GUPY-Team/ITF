@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace FakeData
-{
-    public class ApplicantContacts
+﻿namespace FakeData;
+public class ApplicantContacts
     {
         public Guid ApplicantProfileId { get; set; } // Also PK
 
@@ -13,4 +10,3 @@ namespace FakeData
         public string PortfolioLink { get; set; }
         public string LinkedInLink { get; set; }
     }
-}

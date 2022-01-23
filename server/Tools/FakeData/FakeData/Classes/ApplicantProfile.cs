@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using UserModule;
-
-namespace FakeData
-{
-    public class ApplicantProfile
+﻿namespace FakeData;
+public class ApplicantProfile
     {
         public Guid UserId { get; set; } // Also PK
 
@@ -27,4 +22,3 @@ namespace FakeData
 
         public ICollection<ApplicantSkill> Skills { get; set; }
     }
-}

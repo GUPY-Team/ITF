@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Xml;
+﻿using System.Text.Json;
 using Bogus;
-using UserModule;
-
-namespace FakeData
-{
-    public class FakeDataInitializer
+namespace FakeData;
+public class FakeDataInitializer
     {
-       public static string Path = "../../../../FakeData/Generated.json";
+       public static string Path = "Generated.json";
        public static List<Category> Categories = new List<Category>();
     
        public static List<EmployerContacts> EmployerContactsList = new List<EmployerContacts>();
@@ -161,16 +153,12 @@ namespace FakeData
 
        public static void WriteToFile(string path, ICollection<User> users)
        {
-          using var sw = new StreamWriter(File.Open(path, FileMode.Create));
-
-          sw.WriteLine( users.DumpString());
+          File.WriteAllText(path, users.DumpString());
        }
 
-       public static ICollection<User> ReadFromFile(string path)
+       public static ICollection<User>? ReadFromFile(string path)
        {
-          using StreamReader sw = new StreamReader(path);
-
-          return JsonSerializer.Deserialize<User[]>(sw.ReadToEnd());
+          return JsonSerializer.Deserialize<User[]>( File.ReadAllText(path));
        }
     }
     
@@ -186,5 +174,3 @@ namespace FakeData
           return JsonSerializer.Serialize(obj,new JsonSerializerOptions() {WriteIndented = true});
        }
     }
-   
-}
