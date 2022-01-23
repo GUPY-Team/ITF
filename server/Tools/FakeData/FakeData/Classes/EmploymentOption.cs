@@ -1,11 +1,8 @@
-﻿namespace UserModule
-{
-    public enum EmploymentOption
+﻿namespace FakeData;
+public enum EmploymentOption
     {
         FullTime,
         PartTime,
         Remote,
         Office,
     }
-
-}

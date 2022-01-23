@@ -1,8 +1,5 @@
-﻿using System;
-
-namespace FakeData
-{
-    public class EmployerProfile
+﻿namespace FakeData;
+public class EmployerProfile
     {
         public Guid UserId { get; set; } // Also PK
 
@@ -15,4 +12,3 @@ namespace FakeData
         public EmployerContacts EmployerContacts { get; set; }
         public Guid EmployerContactsId { get; set; }
     }
-}

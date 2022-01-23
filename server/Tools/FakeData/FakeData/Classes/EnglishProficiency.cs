@@ -1,6 +1,5 @@
-﻿namespace FakeData
-{
-    public enum EnglishProficiency
+﻿namespace FakeData;
+public enum EnglishProficiency
     {
         None,
         BeginnerOrElementary,
@@ -9,4 +8,3 @@
         UpperIntermediate,
         AdvancedOrMastery,
     }
-}
