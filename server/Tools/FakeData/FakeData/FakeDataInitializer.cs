@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Xml;
 using Bogus;
-using Newtonsoft.Json;
 using UserModule;
 
 namespace FakeData
 {
     public class FakeDataInitializer
     {
-       public static string Path = "../../../../FakesDataGen/Generated.json";
+       public static string Path = "../../../../FakeData/Generated.json";
        public static List<Category> Categories = new List<Category>();
     
        public static List<EmployerContacts> EmployerContactsList = new List<EmployerContacts>();
@@ -169,7 +170,7 @@ namespace FakeData
        {
           using StreamReader sw = new StreamReader(path);
 
-          return JsonConvert.DeserializeObject<User[]>(sw.ReadToEnd());
+          return JsonSerializer.Deserialize<User[]>(sw.ReadToEnd());
        }
     }
     
@@ -182,7 +183,7 @@ namespace FakeData
 
        public static string DumpString(this object obj)
        {
-          return JsonConvert.SerializeObject(obj, Formatting.Indented);
+          return JsonSerializer.Serialize(obj,new JsonSerializerOptions() {WriteIndented = true});
        }
     }
    
