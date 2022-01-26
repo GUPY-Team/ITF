@@ -1,3 +1,4 @@
+using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
@@ -24,11 +25,11 @@ public class Index : PageModel
     private readonly IAuthenticationSchemeProvider _schemeProvider;
     private readonly IIdentityProviderStore _identityProviderStore;
 
-    public ViewModel View { get; set; }
-        
+    public LoginViewModel LoginViewModel { get; set; }
+
     [BindProperty]
-    public InputModel Input { get; set; }
-        
+    public LoginModel LoginModel { get; set; }
+
     public Index(
         IIdentityServerInteractionService interaction,
         IClientStore clientStore,
@@ -46,27 +47,28 @@ public class Index : PageModel
         _identityProviderStore = identityProviderStore;
         _events = events;
     }
-        
+
     public async Task<IActionResult> OnGet(string returnUrl)
     {
         await BuildModelAsync(returnUrl);
-            
-        if (View.IsExternalLoginOnly)
+
+        if (LoginViewModel.IsExternalLoginOnly)
         {
             // we only have one option for logging in and it's an external provider
-            return RedirectToPage("/ExternalLogin/Challenge", new { scheme = View.ExternalLoginScheme, returnUrl });
+            return RedirectToPage("/ExternalLogin/Challenge",
+                new { scheme = LoginViewModel.ExternalLoginScheme, returnUrl });
         }
 
         return Page();
     }
-        
+
     public async Task<IActionResult> OnPost()
     {
         // check if we are in the context of an authorization request
-        var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+        var context = await _interaction.GetAuthorizationContextAsync(LoginModel.ReturnUrl);
 
         // the user clicked the "cancel" button
-        if (Input.Button != "login")
+        if (LoginModel.Button != "login")
         {
             if (context != null)
             {
@@ -80,25 +82,34 @@ public class Index : PageModel
                 {
                     // The client is native, so this change in how to
                     // return the response is for better UX for the end user.
-                    return this.LoadingPage(Input.ReturnUrl);
+                    return this.LoadingPage(LoginModel.ReturnUrl);
                 }
 
-                return Redirect(Input.ReturnUrl);
+                return Redirect(LoginModel.ReturnUrl);
             }
-            else
-            {
-                // since we don't have a valid context, then we just go back to the home page
-                return Redirect("~/");
-            }
+
+            // since we don't have a valid context, then we just go back to the home page
+            return Redirect("~/");
         }
 
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberLogin, lockoutOnFailure: true);
+            var result = await _signInManager.PasswordSignInAsync(
+                LoginModel.Username,
+                LoginModel.Password,
+                LoginModel.RememberLogin,
+                true);
+
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByNameAsync(Input.Username);
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
+                var user = await _userManager.FindByNameAsync(LoginModel.Username);
+
+                var loginSuccessEvent = new UserLoginSuccessEvent(
+                    user.UserName,
+                    user.Id,
+                    user.UserName,
+                    clientId: context?.Client.ClientId);
+                await _events.RaiseAsync(loginSuccessEvent);
 
                 if (context != null)
                 {
@@ -106,61 +117,68 @@ public class Index : PageModel
                     {
                         // The client is native, so this change in how to
                         // return the response is for better UX for the end user.
-                        return this.LoadingPage(Input.ReturnUrl);
+                        return this.LoadingPage(LoginModel.ReturnUrl);
                     }
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    return Redirect(Input.ReturnUrl);
+                    return Redirect(LoginModel.ReturnUrl);
                 }
 
                 // request for a local page
-                if (Url.IsLocalUrl(Input.ReturnUrl))
+                if (Url.IsLocalUrl(LoginModel.ReturnUrl))
                 {
-                    return Redirect(Input.ReturnUrl);
+                    return Redirect(LoginModel.ReturnUrl);
                 }
-                else if (string.IsNullOrEmpty(Input.ReturnUrl))
+
+                if (string.IsNullOrEmpty(LoginModel.ReturnUrl))
                 {
                     return Redirect("~/");
                 }
-                else
-                {
-                    // user might have clicked on a malicious link - should be logged
-                    throw new Exception("invalid return URL");
-                }
+
+                // user might have clicked on a malicious link - should be logged
+                throw new Exception("invalid return URL");
             }
 
-            await _events.RaiseAsync(new UserLoginFailureEvent(Input.Username, "invalid credentials", clientId:context?.Client.ClientId));
+            var loginFailure = new UserLoginFailureEvent(
+                LoginModel.Username,
+                "invalid credentials",
+                clientId: context?.Client.ClientId);
+            await _events.RaiseAsync(loginFailure);
+
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
         }
 
         // something went wrong, show form with error
-        await BuildModelAsync(Input.ReturnUrl);
+        await BuildModelAsync(LoginModel.ReturnUrl);
         return Page();
     }
-        
+
     private async Task BuildModelAsync(string returnUrl)
     {
-        Input = new InputModel
+        LoginModel = new LoginModel
         {
             ReturnUrl = returnUrl
         };
-            
+
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
         if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
         {
-            var local = context.IdP == Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider;
+            var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
 
             // this is meant to short circuit the UI and only trigger the one external IdP
-            View = new ViewModel
+            LoginViewModel = new LoginViewModel
             {
                 EnableLocalLogin = local,
             };
 
-            Input.Username = context?.LoginHint;
+            LoginModel.Username = context.LoginHint;
 
             if (!local)
             {
-                View.ExternalProviders = new[] { new ViewModel.ExternalProvider { AuthenticationScheme = context.IdP } };
+                LoginViewModel.ExternalProviders = new[]
+                {
+                    new ExternalProviderViewModel { AuthenticationScheme = context.IdP }
+                };
             }
 
             return;
@@ -170,20 +188,20 @@ public class Index : PageModel
 
         var providers = schemes
             .Where(x => x.DisplayName != null)
-            .Select(x => new ViewModel.ExternalProvider
+            .Select(x => new ExternalProviderViewModel
             {
                 DisplayName = x.DisplayName ?? x.Name,
                 AuthenticationScheme = x.Name
             }).ToList();
 
-        var dyanmicSchemes = (await _identityProviderStore.GetAllSchemeNamesAsync())
+        var dynamicSchemes = (await _identityProviderStore.GetAllSchemeNamesAsync())
             .Where(x => x.Enabled)
-            .Select(x => new ViewModel.ExternalProvider
+            .Select(x => new ExternalProviderViewModel
             {
                 AuthenticationScheme = x.Scheme,
                 DisplayName = x.DisplayName
             });
-        providers.AddRange(dyanmicSchemes);
+        providers.AddRange(dynamicSchemes);
 
 
         var allowLocal = true;
@@ -196,12 +214,15 @@ public class Index : PageModel
 
                 if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
                 {
-                    providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+                    providers = providers
+                        .Where(provider => client.IdentityProviderRestrictions
+                            .Contains(provider.AuthenticationScheme)
+                        ).ToList();
                 }
             }
         }
 
-        View = new ViewModel
+        LoginViewModel = new LoginViewModel
         {
             AllowRememberLogin = LoginOptions.AllowRememberLogin,
             EnableLocalLogin = allowLocal && LoginOptions.AllowLocalLogin,

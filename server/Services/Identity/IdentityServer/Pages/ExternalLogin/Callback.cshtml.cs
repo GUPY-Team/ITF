@@ -36,7 +36,7 @@ public class Callback : PageModel
         _logger = logger;
         _events = events;
     }
-        
+
     public async Task<IActionResult> OnGet()
     {
         // read external identity from the temporary cookie
@@ -93,25 +93,38 @@ public class Callback : PageModel
 
         // check if external login is in the context of an OIDC request
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, user.UserName, true, context?.Client.ClientId));
 
-        if (context != null)
+        var loginSuccessEvent = new UserLoginSuccessEvent(
+            provider,
+            providerUserId,
+            user.Id,
+            user.UserName,
+            true,
+            context?.Client.ClientId);
+        await _events.RaiseAsync(loginSuccessEvent);
+
+        if (context == null)
         {
-            if (context.IsNativeClient())
-            {
-                // The client is native, so this change in how to
-                // return the response is for better UX for the end user.
-                return this.LoadingPage(returnUrl);
-            }
+            return Redirect(returnUrl);
+        }
+
+        if (context.IsNativeClient())
+        {
+            // The client is native, so this change in how to
+            // return the response is for better UX for the end user.
+            return this.LoadingPage(returnUrl);
         }
 
         return Redirect(returnUrl);
     }
 
-    private async Task<ApplicationUser> AutoProvisionUserAsync(string provider, string providerUserId, IEnumerable<Claim> claims)
+    private async Task<ApplicationUser> AutoProvisionUserAsync(
+        string provider,
+        string providerUserId,
+        IEnumerable<Claim> claims)
     {
         var sub = Guid.NewGuid().ToString();
-            
+
         var user = new ApplicationUser
         {
             Id = sub,
@@ -125,7 +138,7 @@ public class Callback : PageModel
         {
             user.Email = email;
         }
-            
+
         // create a list of claims that we want to transfer into our store
         var filtered = new List<Claim>();
 
@@ -142,6 +155,7 @@ public class Callback : PageModel
                         claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
             var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
                        claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
+
             if (first != null && last != null)
             {
                 filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
@@ -157,30 +171,45 @@ public class Callback : PageModel
         }
 
         var identityResult = await _userManager.CreateAsync(user);
-        if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+        if (!identityResult.Succeeded)
+        {
+            throw new Exception(identityResult.Errors.First().Description);
+        }
 
         if (filtered.Any())
         {
             identityResult = await _userManager.AddClaimsAsync(user, filtered);
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            if (!identityResult.Succeeded)
+            {
+                throw new Exception(identityResult.Errors.First().Description);
+            }
         }
 
-        identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-        if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+        var userLoginInfo = new UserLoginInfo(provider, providerUserId, provider);
+        identityResult = await _userManager.AddLoginAsync(user, userLoginInfo);
+
+        if (!identityResult.Succeeded)
+        {
+            throw new Exception(identityResult.Errors.First().Description);
+        }
 
         return user;
     }
 
     // if the external login is OIDC-based, there are certain things we need to preserve to make logout work
     // this will be different for WS-Fed, SAML2p or other protocols
-    private void CaptureExternalLoginContext(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+    private void CaptureExternalLoginContext(
+        AuthenticateResult externalResult,
+        ICollection<Claim> localClaims,
+        AuthenticationProperties localSignInProps)
     {
         // capture the idp used to login, so the session knows where the user came from
-        localClaims.Add(new Claim(JwtClaimTypes.IdentityProvider, externalResult.Properties.Items["scheme"]));
+        var idp = new Claim(JwtClaimTypes.IdentityProvider, externalResult.Properties.Items["scheme"]);
+        localClaims.Add(idp);
 
         // if the external system sent a session id claim, copy it over
         // so we can use it for single sign-out
-        var sid = externalResult.Principal.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
+        var sid = externalResult.Principal?.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
         if (sid != null)
         {
             localClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
