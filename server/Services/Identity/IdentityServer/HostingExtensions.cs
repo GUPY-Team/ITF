@@ -1,0 +1,79 @@
+using Duende.IdentityServer;
+using IdentityServer.Data;
+using IdentityServer.Models;
+using Microsoft.AspNetCore.Identity;
+using Serilog;
+
+namespace IdentityServer;
+
+internal static class HostingExtensions
+{
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddRazorPages();
+
+        var connectionString = builder.Configuration.GetConnectionString("Postgres");
+        builder.Services.AddNpgsql<ApplicationDbContext>(connectionString);
+
+        builder.Services
+            .AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services
+            .AddIdentityServer(options =>
+            {
+                options.Endpoints.EnableIntrospectionEndpoint = false;
+                options.Endpoints.EnableTokenRevocationEndpoint = false;
+                options.Endpoints.EnableDeviceAuthorizationEndpoint = false;
+                options.Endpoints.EnableBackchannelAuthenticationEndpoint = false;
+
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                options.EmitStaticAudienceClaim = true;
+            })
+            .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryClients(Config.Clients)
+            .AddAspNetIdentity<ApplicationUser>();
+
+        builder.Services
+            .AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                
+                var googleSettings = builder.Configuration.GetSection("OAuth:Google");
+                options.ClientId = googleSettings["ClientId"];
+                options.ClientSecret = googleSettings["ClientSecret"];
+            });
+
+        return builder.Build();
+    }
+
+    public static WebApplication ConfigurePipeline(this WebApplication app)
+    {
+        app.UseSerilogRequestLogging();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseIdentityServer();
+
+        app.UseAuthorization();
+
+        app.MapRazorPages()
+            .RequireAuthorization();
+
+        return app;
+    }
+}
