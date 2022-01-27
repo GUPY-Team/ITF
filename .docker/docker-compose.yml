@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  identity_server:
+    build:
+      context: ../server/Services/Identity/IdentityServer
+    depends_on:
+      - database
+  database:
+    image: postgres:14

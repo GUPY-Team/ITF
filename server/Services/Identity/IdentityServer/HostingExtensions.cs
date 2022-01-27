@@ -2,6 +2,7 @@ using Duende.IdentityServer;
 using IdentityServer.Data;
 using IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace IdentityServer;
@@ -75,5 +76,13 @@ internal static class HostingExtensions
             .RequireAuthorization();
 
         return app;
+    }
+
+    public static async Task MigrateDatabase(this WebApplication app)
+    {
+        using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await context.Database.MigrateAsync();
     }
 }
