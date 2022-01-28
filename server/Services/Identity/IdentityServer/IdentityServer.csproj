@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+      <UserSecretsId>f57eb2e6-f536-46cb-b2aa-427d80896d8d</UserSecretsId>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.3" />
+
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.0" />
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.2" />
+        <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="keys\is-signing-key-46F4FE31E051426D2D046BBAA94CB03A.json" />
+      <_ContentIncludedByDefault Remove="keys\is-signing-key-863BB20590CF663FEA105F2D3D0526AF.json" />
+      <_ContentIncludedByDefault Remove="Pages\Consent\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Consent\_ScopeListItem.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ciba\All.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ciba\Consent.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ciba\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ciba\_ScopeListItem.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Device\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Device\Success.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Device\_ScopeListItem.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Grants\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="keys\is-signing-key-91B9B85D914777AC1EDD82629AA19990.json" />
+      <_ContentIncludedByDefault Remove="Pages\Diagnostics\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\Home" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\Consent\Index.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Consent\_ScopeListItem.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Grants\Index.cshtml" />
+    </ItemGroup>
+</Project>

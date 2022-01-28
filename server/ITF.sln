@@ -6,6 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{747884DE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeData", "Tools\FakeData\FakeData.csproj", "{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{9E6B7699-5FBF-4735-BAF0-534FC87E9F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "Services\Identity\IdentityServer\IdentityServer.csproj", "{F8DE3B9A-4735-42E3-A693-C1533321854D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,11 +17,17 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29} = {747884DE-BECC-4336-9371-0C1B9626CBED}
+		{9E6B7699-5FBF-4735-BAF0-534FC87E9F3B} = {5490497D-E452-4C63-B08B-F0C2E0A8A440}
+		{F8DE3B9A-4735-42E3-A693-C1533321854D} = {9E6B7699-5FBF-4735-BAF0-534FC87E9F3B}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B2AF6C5-0254-4085-8AB9-9FC08BEDAB29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8DE3B9A-4735-42E3-A693-C1533321854D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8DE3B9A-4735-42E3-A693-C1533321854D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8DE3B9A-4735-42E3-A693-C1533321854D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8DE3B9A-4735-42E3-A693-C1533321854D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

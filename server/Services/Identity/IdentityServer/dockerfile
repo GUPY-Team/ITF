@@ -1,0 +1,18 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /build
+
+COPY IdentityServer.csproj ./IdentityServer.csproj
+
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet build -c Release --no-restore
+RUN dotnet publish -c Release -o /published-app --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /identity-server
+
+COPY --from=build /published-app ./
+
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]
