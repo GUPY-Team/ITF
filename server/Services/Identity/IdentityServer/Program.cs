@@ -30,7 +30,9 @@ try
         return;
     }
 
+    Log.Debug("Migrating database...");
     await app.MigrateDatabase();
+    Log.Debug("Done migrating database.");
 
     app.Run();
 }

@@ -4,12 +4,16 @@ services:
   identity_server:
     restart: on-failure
     ports:
-      - "1000:1000"
+      - "1001:1001"
     environment:
-      ASPNETCORE_URLS: "http://+:1000"
+      ASPNETCORE_URLS: "https://+:1001"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: 12345
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       ConnectionStrings__Postgres: "Host=database;Username=postgres;Password=postgres;Database=itf"
       OAuth__Google__ClientId: $GOOGLE_CLIENT_ID
       OAuth__Google__ClientSecret: $GOOGLE_CLIENT_SECRET
+    volumes:
+      - ~/.aspnet/https:/https:ro
   database:
     restart: on-failure
     ports:
