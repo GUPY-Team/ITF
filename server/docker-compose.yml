@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  identity_server:
+    build:
+      context: .
+      dockerfile: ./Services/Identity/IdentityServer/dockerfile
+    depends_on:
+      - database
+  itf:
+    build:
+      context: .
+      dockerfile: ./Services/ITF/ITF.Api/dockerfile
+    depends_on:
+      - identity_server
+  database:
+    image: postgres:14
