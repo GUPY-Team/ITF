@@ -1,0 +1,19 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /build
+
+COPY ["Services/Chat/Chat.Hub/Chat.Hub.csproj", "Services/Chat/Chat.Hub/Chat.Hub.csproj"]
+
+RUN dotnet restore "Services/Chat/Chat.Hub/Chat.Hub.csproj"
+
+COPY . .
+WORKDIR "/build/Services/Chat/Chat.Hub"
+
+RUN dotnet build "Chat.Hub.csproj" -c Release --no-restore
+RUN dotnet publish "Chat.Hub.csproj" -c Release -o /published-app --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /identity-server
+
+COPY --from=build /published-app ./
+
+ENTRYPOINT ["dotnet", "Chat.Hub.dll"]
