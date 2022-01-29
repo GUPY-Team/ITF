@@ -4,12 +4,14 @@ public class RecruiterProfile
 {
     public Guid Id { get; set; }
 
-    public string FullName { get; set; }
-    public string Position { get; set; }
+    public string FullName { get; set; } = null!;
+    public string Position { get; set; } = null!;
 
-    public string CompanyDescription { get; set; }
-    public string CompanyWebsite { get; set; }
+    public string CompanyDescription { get; set; } = null!;
+    public string? CompanyWebsite { get; set; }
 
-    public RecruiterContacts? EmployerContacts { get; set; }
-    public Guid EmployerContactsId { get; set; }
+    public RecruiterContacts? RecruiterContacts { get; set; }
+    public Guid RecruiterContactsId { get; set; }
+
+    public ICollection<Position> Positions { get; set; } = new List<Position>();
 }
