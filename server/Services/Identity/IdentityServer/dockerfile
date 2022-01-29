@@ -1,14 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /build
 
-COPY IdentityServer.csproj ./IdentityServer.csproj
+COPY ["Services/Identity/IdentityServer/IdentityServer.csproj", "Services/Identity/IdentityServer/IdentityServer.csproj"]
 
-RUN dotnet restore
+RUN dotnet restore "Services/Identity/IdentityServer/IdentityServer.csproj"
 
 COPY . .
+WORKDIR "/build/Services/Identity/IdentityServer"
 
-RUN dotnet build -c Release --no-restore
-RUN dotnet publish -c Release -o /published-app --no-restore
+RUN dotnet build "IdentityServer.csproj" -c Release --no-restore
+RUN dotnet publish "IdentityServer.csproj" -c Release -o /published-app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /identity-server
