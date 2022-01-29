@@ -13,5 +13,11 @@ services:
       dockerfile: ./Services/ITF/ITF.Api/dockerfile
     depends_on:
       - identity_server
+  chat:
+    build:
+      context: .
+      dockerfile: ./Services/Chat/Chat.Hub/dockerfile
+    depends_on:
+      - identity_server
   database:
     image: postgres:14

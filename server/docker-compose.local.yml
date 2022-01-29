@@ -24,6 +24,16 @@ services:
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
+  chat:
+    restart: on-failure
+    ports:
+      - "3001:3001"
+    environment:
+      ASPNETCORE_URLS: "https://+:3001"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: 12345
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
   database:
     restart: on-failure
     ports:
