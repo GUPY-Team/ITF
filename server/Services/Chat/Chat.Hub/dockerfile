@@ -2,6 +2,9 @@
 WORKDIR /build
 
 COPY ["Services/Chat/Chat.Hub/Chat.Hub.csproj", "Services/Chat/Chat.Hub/Chat.Hub.csproj"]
+COPY ["Services/Chat/Chat.Application/Chat.Application.csproj", "Services/Chat/Chat.Application/Chat.Application.csproj"]
+COPY ["Services/Chat/Chat.Infrastructure/Chat.Infrastructure.csproj", "Services/Chat/Chat.Infrastructure/Chat.Infrastructure.csproj"]
+COPY ["Services/Chat/Chat.Domain/Chat.Domain.csproj", "Services/Chat/Chat.Domain/Chat.Domain.csproj"]
 
 RUN dotnet restore "Services/Chat/Chat.Hub/Chat.Hub.csproj"
 
@@ -12,7 +15,7 @@ RUN dotnet build "Chat.Hub.csproj" -c Release --no-restore
 RUN dotnet publish "Chat.Hub.csproj" -c Release -o /published-app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /identity-server
+WORKDIR /chat
 
 COPY --from=build /published-app ./
 
