@@ -1,6 +1,7 @@
 using Duende.IdentityServer;
 using IdentityServer.Data;
 using IdentityServer.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -12,6 +13,14 @@ internal static class HostingExtensions
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                                       ForwardedHeaders.XForwardedProto |
+                                       ForwardedHeaders.XForwardedHost;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
 
         var connectionString = builder.Configuration.GetConnectionString("Postgres");
         builder.Services.AddNpgsql<ApplicationDbContext>(connectionString);
@@ -63,6 +72,8 @@ internal static class HostingExtensions
         {
             app.UseDeveloperExceptionPage();
         }
+
+        app.UseForwardedHeaders();
 
         app.UseStaticFiles();
 

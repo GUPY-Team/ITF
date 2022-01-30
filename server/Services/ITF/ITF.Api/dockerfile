@@ -1,15 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /build
 
-COPY ["Services/ITF/ITF.Api/ITF.Api.csproj", "Services/ITF/ITF.Api/ITF.Api.csproj"]
-COPY ["Services/ITF/ITF.Application/ITF.Application.csproj", "Services/ITF/ITF.Application/ITF.Application.csproj"]
-COPY ["Services/ITF/ITF.Domain/ITF.Domain.csproj", "Services/ITF/ITF.Domain/ITF.Domain.csproj"]
-COPY ["Services/ITF/ITF.Infrastructure/ITF.Infrastructure.csproj", "Services/ITF/ITF.Infrastructure/ITF.Infrastructure.csproj"]
+COPY ["server/Services/ITF/ITF.Api/ITF.Api.csproj", "server/Services/ITF/ITF.Api/ITF.Api.csproj"]
+COPY ["server/Services/ITF/ITF.Application/ITF.Application.csproj", "server/Services/ITF/ITF.Application/ITF.Application.csproj"]
+COPY ["server/Services/ITF/ITF.Domain/ITF.Domain.csproj", "server/Services/ITF/ITF.Domain/ITF.Domain.csproj"]
+COPY ["server/Services/ITF/ITF.Infrastructure/ITF.Infrastructure.csproj", "server/Services/ITF/ITF.Infrastructure/ITF.Infrastructure.csproj"]
 
-RUN dotnet restore "Services/ITF/ITF.Api/ITF.Api.csproj"
+RUN dotnet restore "server/Services/ITF/ITF.Api/ITF.Api.csproj"
 
 COPY . .
-WORKDIR "/build/Services/ITF/ITF.Api"
+WORKDIR "/build/server/Services/ITF/ITF.Api"
 
 RUN dotnet build "ITF.Api.csproj" -c Release --no-restore
 RUN dotnet publish "ITF.Api.csproj" -c Release -o /published-app --no-restore

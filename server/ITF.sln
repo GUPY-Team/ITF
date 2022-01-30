@@ -20,15 +20,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITF.Domain", "Services\ITF\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITF.Infrastructure", "Services\ITF\ITF.Infrastructure\ITF.Infrastructure.csproj", "{1E07B6F5-E0A0-437B-9C1A-4D8D35A51750}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{50394F99-2686-47FA-9464-38B6DEF66B9A}"
-	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		.env = .env
-		.env.example = .env.example
-		docker-compose.yml = docker-compose.yml
-		docker-compose.local.yml = docker-compose.local.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chat", "Chat", "{8FB6C7C3-7CF0-4F5C-ABA7-9C103E90CC06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat.Hub", "Services\Chat\Chat.Hub\Chat.Hub.csproj", "{03C76A95-7832-4B05-BE17-7574C1FFDCA6}"
