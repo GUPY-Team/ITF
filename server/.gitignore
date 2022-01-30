@@ -459,8 +459,3 @@ $RECYCLE.BIN/
 
 # Identity server keys
 keys/
-
-# Env files
-.env
-.env.*
-!.env.example
