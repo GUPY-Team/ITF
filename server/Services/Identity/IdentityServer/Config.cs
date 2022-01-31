@@ -26,9 +26,9 @@ public static class Config
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                AllowedCorsOrigins = { "https://localhost:2001" },
-                PostLogoutRedirectUris = { "https://localhost:2001/logged-out" },
-                RedirectUris = { "https://localhost:2001/success-auth" },
+                AllowedCorsOrigins = { "http://localhost:2001" },
+                PostLogoutRedirectUris = { "http://localhost:2001/logged-out" },
+                RedirectUris = { "http://localhost:2001/success-auth" },
 
                 AllowOfflineAccess = true,
                 AllowedScopes =
