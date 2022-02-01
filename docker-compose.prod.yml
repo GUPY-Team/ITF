@@ -1,0 +1,112 @@
+﻿version: "3.8"
+
+services:
+  reverse-proxy:
+    image: traefik:2.6
+    labels:
+      # Enable https
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+      
+      # Setup http -> https redirect via catch-all router
+      - traefik.http.routers.catch-all-http.rule=HostRegexp(`{host:.+}`)
+      - traefik.http.routers.catch-all-http.middlewares=https-redirect
+      - traefik.http.routers.catch-all-http.entrypoints=http
+    command:
+      # Set docker provider & disable auto expose
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+
+      # Enable http & https
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      
+      # Setup certificates via lets encrypt
+      - --certificatesresolvers.le.acme.email=${LETSENCRYPT_EMAIL?Required}
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.dnschallenge=true
+      - --certificatesresolvers.le.acme.dnschallenge.provider=godaddy
+      - --certificatesresolvers.le.acme.dnschallenge.delaybeforecheck=0
+
+      # TLS setup
+      - --entrypoints.https.http.tls.domains[0].main=${DOMAIN?Required}
+      - --entrypoints.https.http.tls.domains[0].sans=*.${DOMAIN?Required}
+
+      # Enable logging
+      - --accesslog
+      - --log
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      GODADDY_API_KEY: ${GODADDY_API_KEY?Required}
+      GODADDY_API_SECRET: ${GODADDY_API_SECRET?Required}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-cert:/certificates
+  identity-server:
+    labels:
+      - traefik.enable=true
+      
+      - traefik.http.routers.identity.entrypoints=https
+      - traefik.http.routers.identity.rule=Host(`identity.${DOMAIN}`)
+      - traefik.http.routers.identity.tls.certresolver=le
+
+      - traefik.http.services.identity.loadbalancer.server.port=1000
+    build:
+      context: .
+      dockerfile: ./server/Services/Identity/IdentityServer/dockerfile
+    depends_on:
+      - database
+    environment:
+      ASPNETCORE_URLS: "http://+:1000"
+      ConnectionStrings__Postgres: ${POSTGRES_CONNECTION?Required}
+      OAuth__Google__ClientId: ${GOOGLE_CLIENT_ID?Required}
+      OAuth__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET?Required}
+  itf:
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.itf.entrypoints=https
+      - traefik.http.routers.itf.rule=Host(`api.${DOMAIN?Required}`)
+      - traefik.http.routers.itf.tls.certresolver=le
+
+      - traefik.http.services.itf.loadbalancer.server.port=2000
+    build:
+      context: .
+      dockerfile: ./server/Services/ITF/ITF.Api/dockerfile
+    depends_on:
+      - identity-server
+    environment:
+      ASPNETCORE_URLS: "http://+:2000"
+      ConnectionStrings__Postgres: ${POSTGRES_CONNECTION?Required}
+  chat:
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.chat.entrypoints=https
+      - traefik.http.routers.chat.rule=Host(`chat.${DOMAIN?Required}`)
+      - traefik.http.routers.chat.tls.certresolver=le
+
+      - traefik.http.services.chat.loadbalancer.server.port=3000
+    build:
+      context: .
+      dockerfile: ./server/Services/Chat/Chat.Hub/dockerfile
+    depends_on:
+      - identity-server
+    environment:
+      ASPNETCORE_URLS: "http://+:3000"
+      ConnectionStrings__Postgres: ${POSTGRES_CONNECTION?Required}
+  database:
+    restart: on-failure
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER?Required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Required}
+      POSTGRES_DB: ${POSTGRES_DB?Required}
+    volumes:
+      - database-vol:/var/lib/postgresql/data
+
+volumes:
+  database-vol:
+  traefik-cert:
