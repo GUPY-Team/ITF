@@ -4,7 +4,10 @@ services:
   reverse-proxy:
     image: traefik:2.6
     labels:
-      # Enable https
+      # Expose traefik in order to enable middleware
+      - traefik.enable=true
+
+      # Define https redirect middleware
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
       
