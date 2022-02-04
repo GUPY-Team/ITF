@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServerHost.Pages.Login;
+namespace IdentityServer.Pages.Account.Login;
 
 public class LoginModel
 {

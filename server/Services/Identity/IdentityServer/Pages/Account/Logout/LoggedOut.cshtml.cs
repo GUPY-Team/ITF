@@ -3,17 +3,17 @@ using IdentityServer.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Logout;
+namespace IdentityServer.Pages.Account.Logout;
 
 [SecurityHeaders]
 [AllowAnonymous]
-public class LoggedOut : PageModel
+public class LoggedOutModel : PageModel
 {
     private readonly IIdentityServerInteractionService _interactionService;
         
     public LoggedOutViewModel ViewModel { get; set; }
 
-    public LoggedOut(IIdentityServerInteractionService interactionService)
+    public LoggedOutModel(IIdentityServerInteractionService interactionService)
     {
         _interactionService = interactionService;
     }

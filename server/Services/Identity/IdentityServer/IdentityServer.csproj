@@ -38,10 +38,7 @@
       <_ContentIncludedByDefault Remove="Pages\Grants\Index.cshtml" />
       <_ContentIncludedByDefault Remove="keys\is-signing-key-91B9B85D914777AC1EDD82629AA19990.json" />
       <_ContentIncludedByDefault Remove="Pages\Diagnostics\Index.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Pages\Home" />
+      <_ContentIncludedByDefault Remove="Pages\Error\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
