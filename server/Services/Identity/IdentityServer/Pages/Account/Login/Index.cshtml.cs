@@ -1,5 +1,6 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
@@ -50,6 +51,11 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGet(string returnUrl)
     {
+        if (HttpContext.User.IsAuthenticated())
+        {
+            return Redirect("~/");
+        }
+        
         await BuildModelAsync(returnUrl);
 
         if (LoginViewModel.IsExternalLoginOnly)

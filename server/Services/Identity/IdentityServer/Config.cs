@@ -22,7 +22,6 @@ public static class Config
                 ClientId = "spa",
 
                 RequireClientSecret = false,
-                EnableLocalLogin = false,
 
                 AllowedGrantTypes = GrantTypes.Code,
 
