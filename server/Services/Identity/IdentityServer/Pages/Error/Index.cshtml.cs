@@ -1,20 +1,20 @@
-using Duende.IdentityServer.Services;
+﻿using Duende.IdentityServer.Services;
 using IdentityServer.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Error;
+namespace IdentityServer.Pages.Error;
 
 [AllowAnonymous]
 [SecurityHeaders]
-public class Index : PageModel
+public class IndexModel : PageModel
 {
     private readonly IIdentityServerInteractionService _interaction;
     private readonly IWebHostEnvironment _environment;
         
-    public ViewModel View { get; set; }
+    public ErrorViewModel ErrorView { get; set; }
         
-    public Index(IIdentityServerInteractionService interaction, IWebHostEnvironment environment)
+    public IndexModel(IIdentityServerInteractionService interaction, IWebHostEnvironment environment)
     {
         _interaction = interaction;
         _environment = environment;
@@ -22,13 +22,13 @@ public class Index : PageModel
         
     public async Task OnGet(string errorId)
     {
-        View = new ViewModel();
+        ErrorView = new ErrorViewModel();
 
         // retrieve error details from identityserver
         var message = await _interaction.GetErrorContextAsync(errorId);
         if (message != null)
         {
-            View.Error = message;
+            ErrorView.Error = message;
 
             if (!_environment.IsDevelopment())
             {

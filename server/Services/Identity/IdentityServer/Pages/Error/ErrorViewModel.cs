@@ -1,14 +1,14 @@
 ﻿using Duende.IdentityServer.Models;
 
-namespace IdentityServerHost.Pages.Error;
+namespace IdentityServer.Pages.Error;
 
-public class ViewModel
+public class ErrorViewModel
 {
-    public ViewModel()
+    public ErrorViewModel()
     {
     }
 
-    public ViewModel(string error)
+    public ErrorViewModel(string error)
     {
         Error = new ErrorMessage { Error = error };
     }

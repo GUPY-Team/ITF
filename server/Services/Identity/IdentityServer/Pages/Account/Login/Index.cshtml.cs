@@ -1,5 +1,6 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
@@ -11,11 +12,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Login;
+namespace IdentityServer.Pages.Account.Login;
 
 [SecurityHeaders]
 [AllowAnonymous]
-public class Index : PageModel
+public class IndexModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -30,7 +31,7 @@ public class Index : PageModel
     [BindProperty]
     public LoginModel LoginModel { get; set; }
 
-    public Index(
+    public IndexModel(
         IIdentityServerInteractionService interaction,
         IClientStore clientStore,
         IAuthenticationSchemeProvider schemeProvider,
@@ -50,6 +51,11 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnGet(string returnUrl)
     {
+        if (HttpContext.User.IsAuthenticated())
+        {
+            return Redirect("~/");
+        }
+        
         await BuildModelAsync(returnUrl);
 
         if (LoginViewModel.IsExternalLoginOnly)

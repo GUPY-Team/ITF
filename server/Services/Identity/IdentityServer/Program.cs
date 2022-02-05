@@ -22,14 +22,6 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
-    if (args.Contains("/seed"))
-    {
-        Log.Information("Seeding database...");
-        await SeedData.EnsureSeedData(app);
-        Log.Information("Done seeding database. Exiting.");
-        return;
-    }
-
     Log.Debug("Migrating database...");
     await app.MigrateDatabase();
     Log.Debug("Done migrating database.");

@@ -11,23 +11,28 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Logout;
+namespace IdentityServer.Pages.Account.Logout;
 
 [SecurityHeaders]
 [AllowAnonymous]
-public class Index : PageModel
+public class IndexModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IIdentityServerInteractionService _interaction;
+    private readonly IAuthenticationHandlerProvider _authHandlerProvider;
     private readonly IEventService _events;
 
     [BindProperty] public string LogoutId { get; set; }
 
-    public Index(SignInManager<ApplicationUser> signInManager, IIdentityServerInteractionService interaction,
+    public IndexModel(
+        SignInManager<ApplicationUser> signInManager,
+        IIdentityServerInteractionService interaction,
+        IAuthenticationHandlerProvider authHandlerProvider,
         IEventService events)
     {
         _signInManager = signInManager;
         _interaction = interaction;
+        _authHandlerProvider = authHandlerProvider;
         _events = events;
     }
 
@@ -88,7 +93,8 @@ public class Index : PageModel
             }
 
             // we need to see if the provider supports external logout
-            if (!await HttpContextExtensions.GetSchemeSupportsSignOutAsync(HttpContext, idp))
+            var handler = await _authHandlerProvider.GetHandlerAsync(HttpContext, idp);
+            if (handler is not IAuthenticationSignOutHandler)
             {
                 return RedirectToPage("/Account/Logout/LoggedOut", new { logoutId = LogoutId });
             }

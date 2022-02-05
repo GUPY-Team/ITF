@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Home;
+namespace IdentityServer.Pages;
 
-[AllowAnonymous]
-public class Index : PageModel
+public class IndexModel : PageModel
 {
     public void OnGet()
     {

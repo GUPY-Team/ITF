@@ -1,6 +1,6 @@
-namespace IdentityServerHost.Pages.Login;
+namespace IdentityServer.Pages.Account.Login;
 
-public class LoginOptions
+public static class LoginOptions
 {
     public const bool AllowLocalLogin = true;
     public const bool AllowRememberLogin = true;

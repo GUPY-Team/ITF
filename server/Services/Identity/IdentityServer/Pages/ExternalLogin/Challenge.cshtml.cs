@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.ExternalLogin;
+namespace IdentityServer.Pages.ExternalLogin;
 
 [AllowAnonymous]
 [SecurityHeaders]
-public class Challenge : PageModel
+public class ChallengeModel : PageModel
 {
     private readonly IIdentityServerInteractionService _interactionService;
 
-    public Challenge(IIdentityServerInteractionService interactionService)
+    public ChallengeModel(IIdentityServerInteractionService interactionService)
     {
         _interactionService = interactionService;
     }

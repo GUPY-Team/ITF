@@ -11,22 +11,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.ExternalLogin;
+namespace IdentityServer.Pages.ExternalLogin;
 
 [AllowAnonymous]
 [SecurityHeaders]
-public class Callback : PageModel
+public class CallbackModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IIdentityServerInteractionService _interaction;
-    private readonly ILogger<Callback> _logger;
+    private readonly ILogger<CallbackModel> _logger;
     private readonly IEventService _events;
 
-    public Callback(
+    public CallbackModel(
         IIdentityServerInteractionService interaction,
         IEventService events,
-        ILogger<Callback> logger,
+        ILogger<CallbackModel> logger,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager)
     {
