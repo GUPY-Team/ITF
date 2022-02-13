@@ -1,8 +1,9 @@
-﻿using ITF.Domain.Enums;
+﻿using ITF.Domain.Entities;
+using ITF.Domain.Enums;
 
-namespace ITF.Domain.Entities;
+namespace ITF.Application.DeveloperProfiles.Dtos;
 
-public class DeveloperProfile
+public class DeveloperProfileDto
 {
     public Guid Id { get; set; }
 
@@ -18,13 +19,9 @@ public class DeveloperProfile
 
     public bool IsActive { get; set; }
 
-    public DeveloperContacts? DeveloperContacts { get; set; }
     public Guid ApplicantContactsId { get; set; }
-
-    public DeveloperCategory? DeveloperCategory { get; set; }
     public Guid DeveloperCategoryId { get; set; }
 
     public List<string> Skills { get; set; } = new();
     public List<WorkOption> WorkOptions { get; set; } = new();
-
 }

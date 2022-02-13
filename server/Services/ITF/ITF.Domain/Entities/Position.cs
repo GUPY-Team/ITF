@@ -10,5 +10,5 @@ public class Position
     public string Description { get; set; } = null!;
     public string City { get; set; } = null!;
     public int? ExperienceInYears { get; set; }
-    public ICollection<WorkOption> WorkOptions { get; set; } = new List<WorkOption>();
+    public List<WorkOption> WorkOptions { get; set; } = new();
 }

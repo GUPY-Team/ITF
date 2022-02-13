@@ -11,4 +11,14 @@
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj" />
+      <ProjectReference Include="..\ITF.Domain\ITF.Domain.csproj" />
+      <ProjectReference Include="..\ITF.Infrastructure\ITF.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DeveloperProfiles\Queries" />
+    </ItemGroup>
+
 </Project>

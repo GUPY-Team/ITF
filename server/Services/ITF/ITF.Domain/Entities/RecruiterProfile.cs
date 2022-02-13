@@ -10,6 +10,8 @@ public class RecruiterProfile
     public string CompanyDescription { get; set; } = null!;
     public string? CompanyWebsite { get; set; }
 
+    public bool IsActive { get; set; }
+
     public RecruiterContacts? RecruiterContacts { get; set; }
     public Guid RecruiterContactsId { get; set; }
 
