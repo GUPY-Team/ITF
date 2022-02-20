@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Bogus;
+﻿using Bogus;
 using ITF.Domain.Entities;
 using ITF.Domain.Enums;
-using ITF.Infrastructure;
 
 namespace FakeData;
 
 public static class FakeDataInitializer
 {
-    public const string DefaultUserId = "3ccb6a0d-e41c-4ae5-97ea-99e870468498";
-
-    public static void SeedItfData(ItfDbContext dbContext)
+    public static User CreateUser(Guid userId)
     {
         var positions = new List<string> { "Junior", "Middle", "Senior" };
 
@@ -29,7 +24,6 @@ public static class FakeDataInitializer
             .RuleFor(dc => dc.Id, Guid.NewGuid)
             .RuleFor(dc => dc.Name, f => f.Hacker.Noun())
             .Generate(30);
-        dbContext.DeveloperCategories.AddRange(developerCategories);
 
         var developerContactsFaker = new Faker<DeveloperContacts>()
             .RuleFor(dc => dc.Email, f => f.Internet.Email())
@@ -56,14 +50,10 @@ public static class FakeDataInitializer
             .RuleFor(dp => dp.Skills, f => f.Make(f.Random.Number(5, 30), () => f.Hacker.Noun()))
             .RuleFor(dp => dp.WorkOptions, f => f.Make(f.Random.Number(4), f.PickRandom<WorkOption>).Distinct().ToList());
 
-        var user = new User
+        return new User
         {
-            Id = Guid.Parse(DefaultUserId),
+            Id = userId,
             DeveloperProfile = developerProfileFaker.Generate()
         };
-
-        dbContext.Users.Add(user);
-
-        dbContext.SaveChanges();
     }
 }

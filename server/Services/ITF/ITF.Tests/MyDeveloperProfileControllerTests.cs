@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -20,8 +21,14 @@ public class DeveloperProfileControllerTests : IClassFixture<ItfWebApplicationFa
     [Fact]
     public async Task GetProfile_ShouldReturnProfile()
     {
+        var user = FakeDataInitializer.CreateUser(Guid.Parse(Constants.DefaultUserId));
+
         using var client = _factory
-            .ClearAndSeed(FakeDataInitializer.SeedItfData)
+            .ClearAndSeed(ctx =>
+            {
+                ctx.Users.Add(user);
+                ctx.SaveChanges();
+            })
             .CreateClientWithFakeAuth();
 
         var result = await client.GetAsync("/my-developer-profile");
@@ -29,5 +36,6 @@ public class DeveloperProfileControllerTests : IClassFixture<ItfWebApplicationFa
 
         var profile = await result.Content.ReadFromJsonAsync<DeveloperProfileDto>();
         Assert.NotNull(profile);
+        Assert.Equal(user.DeveloperProfile.Id, profile.Id);
     }
 }
