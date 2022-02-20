@@ -17,8 +17,4 @@
       <ProjectReference Include="..\ITF.Infrastructure\ITF.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DeveloperProfiles\Queries" />
-    </ItemGroup>
-
 </Project>

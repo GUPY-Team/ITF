@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using ITF.Application.DeveloperProfiles.Commands;
+using ITF.Application.MyDeveloperProfile.Commands;
 
 namespace ITF.Api.Validators.DeveloperProfiles;
 
-public class UpdateDeveloperProfileCommandValidator : AbstractValidator<UpdateDeveloperProfileCommand>
+public class UpdateDeveloperProfileCommandValidator : AbstractValidator<UpdateProfileCommand>
 {
     public UpdateDeveloperProfileCommandValidator()
     {

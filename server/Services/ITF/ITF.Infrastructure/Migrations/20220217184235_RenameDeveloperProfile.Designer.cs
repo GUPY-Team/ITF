@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ITF.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ITF.Infrastructure.Migrations
 {
     [DbContext(typeof(ItfDbContext))]
-    partial class ItfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220217184235_RenameDeveloperProfile")]
+    partial class RenameDeveloperProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +43,8 @@ namespace ITF.Infrastructure.Migrations
 
             modelBuilder.Entity("ITF.Domain.Entities.DeveloperContacts", b =>
                 {
-                    b.Property<Guid>("DeveloperProfileId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -62,7 +65,7 @@ namespace ITF.Infrastructure.Migrations
                     b.Property<string>("Telegram")
                         .HasColumnType("text");
 
-                    b.HasKey("DeveloperProfileId");
+                    b.HasKey("Id");
 
                     b.ToTable("DeveloperContacts", "Itf");
                 });
@@ -80,6 +83,9 @@ namespace ITF.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid>("DeveloperCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DeveloperContactsId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("EnglishProficiency")
@@ -119,6 +125,8 @@ namespace ITF.Infrastructure.Migrations
 
                     b.HasIndex("DeveloperCategoryId");
 
+                    b.HasIndex("DeveloperContactsId");
+
                     b.ToTable("DeveloperProfiles", "Itf");
                 });
 
@@ -139,7 +147,7 @@ namespace ITF.Infrastructure.Migrations
                     b.Property<int?>("ExperienceInYears")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("RecruiterProfileId")
+                    b.Property<Guid?>("RecruiterProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Title")
@@ -159,19 +167,23 @@ namespace ITF.Infrastructure.Migrations
 
             modelBuilder.Entity("ITF.Domain.Entities.RecruiterContacts", b =>
                 {
-                    b.Property<Guid>("RecruiterProfileId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("LinkedInLink")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Telegram")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("RecruiterProfileId");
+                    b.HasKey("Id");
 
                     b.ToTable("RecruiterContacts", "Itf");
                 });
@@ -200,7 +212,12 @@ namespace ITF.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RecruiterContactsId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RecruiterContactsId");
 
                     b.ToTable("RecruiterProfiles", "Itf");
                 });
@@ -229,17 +246,6 @@ namespace ITF.Infrastructure.Migrations
                     b.ToTable("Users", "Itf");
                 });
 
-            modelBuilder.Entity("ITF.Domain.Entities.DeveloperContacts", b =>
-                {
-                    b.HasOne("ITF.Domain.Entities.DeveloperProfile", "DeveloperProfile")
-                        .WithOne("DeveloperContacts")
-                        .HasForeignKey("ITF.Domain.Entities.DeveloperContacts", "DeveloperProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DeveloperProfile");
-                });
-
             modelBuilder.Entity("ITF.Domain.Entities.DeveloperProfile", b =>
                 {
                     b.HasOne("ITF.Domain.Entities.DeveloperCategory", "DeveloperCategory")
@@ -248,29 +254,33 @@ namespace ITF.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ITF.Domain.Entities.DeveloperContacts", "DeveloperContacts")
+                        .WithMany()
+                        .HasForeignKey("DeveloperContactsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("DeveloperCategory");
+
+                    b.Navigation("DeveloperContacts");
                 });
 
             modelBuilder.Entity("ITF.Domain.Entities.Position", b =>
                 {
-                    b.HasOne("ITF.Domain.Entities.RecruiterProfile", "RecruiterProfile")
+                    b.HasOne("ITF.Domain.Entities.RecruiterProfile", null)
                         .WithMany("Positions")
-                        .HasForeignKey("RecruiterProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RecruiterProfile");
+                        .HasForeignKey("RecruiterProfileId");
                 });
 
-            modelBuilder.Entity("ITF.Domain.Entities.RecruiterContacts", b =>
+            modelBuilder.Entity("ITF.Domain.Entities.RecruiterProfile", b =>
                 {
-                    b.HasOne("ITF.Domain.Entities.RecruiterProfile", "RecruiterProfile")
-                        .WithOne("RecruiterContacts")
-                        .HasForeignKey("ITF.Domain.Entities.RecruiterContacts", "RecruiterProfileId")
+                    b.HasOne("ITF.Domain.Entities.RecruiterContacts", "RecruiterContacts")
+                        .WithMany()
+                        .HasForeignKey("RecruiterContactsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("RecruiterProfile");
+                    b.Navigation("RecruiterContacts");
                 });
 
             modelBuilder.Entity("ITF.Domain.Entities.User", b =>
@@ -288,16 +298,9 @@ namespace ITF.Infrastructure.Migrations
                     b.Navigation("RecruiterProfile");
                 });
 
-            modelBuilder.Entity("ITF.Domain.Entities.DeveloperProfile", b =>
-                {
-                    b.Navigation("DeveloperContacts");
-                });
-
             modelBuilder.Entity("ITF.Domain.Entities.RecruiterProfile", b =>
                 {
                     b.Navigation("Positions");
-
-                    b.Navigation("RecruiterContacts");
                 });
 #pragma warning restore 612, 618
         }

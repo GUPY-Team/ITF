@@ -1,6 +1,6 @@
-﻿namespace ITF.Domain.Entities;
+﻿namespace ITF.Application.MyDeveloperProfile.Dtos;
 
-public class DeveloperContacts
+public class DeveloperContactsDto
 {
     public string? FullName { get; set; }
     public string? Email { get; set; }
@@ -8,7 +8,4 @@ public class DeveloperContacts
     public string? Telegram { get; set; }
     public string? PortfolioLink { get; set; }
     public string? LinkedInLink { get; set; }
-
-    public DeveloperProfile? DeveloperProfile { get; set; }
-    public Guid DeveloperProfileId { get; set; }
 }

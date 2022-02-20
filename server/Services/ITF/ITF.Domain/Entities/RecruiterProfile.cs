@@ -13,7 +13,6 @@ public class RecruiterProfile
     public bool IsActive { get; set; }
 
     public RecruiterContacts? RecruiterContacts { get; set; }
-    public Guid RecruiterContactsId { get; set; }
 
     public ICollection<Position> Positions { get; set; } = new List<Position>();
 }

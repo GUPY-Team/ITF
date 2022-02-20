@@ -1,9 +1,9 @@
 ﻿using ITF.Domain.Enums;
 using MediatR;
 
-namespace ITF.Application.DeveloperProfiles.Commands;
+namespace ITF.Application.MyDeveloperProfile.Commands;
 
-public class CreateDeveloperProfileCommand : IRequest
+public class UpdateProfileCommand : IRequest
 {
     public string Position { get; set; } = null!;
     public int SalaryExpectation { get; set; }
