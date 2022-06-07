@@ -1,6 +1,4 @@
-﻿using FakeData;
-
-namespace ITF.Tests.Common;
+﻿namespace ITF.Tests.Common;
 
 public static class Constants
 {

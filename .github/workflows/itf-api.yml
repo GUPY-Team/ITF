@@ -1,0 +1,61 @@
+﻿name: ITF Api CI/CD
+
+on:
+  push:
+    paths:
+      - 'server/Services/ITF/**'
+      - '.github/workflows/itf-api.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'server/Services/ITF/**'
+      - '.github/workflows/itf-api.yml'
+  workflow_dispatch: 
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services: 
+      database:
+        image: postgres:14
+        env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_DB: "itf"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore
+        run: >-
+          dotnet restore
+          server/Services/ITF/ITF.Api/ITF.Api.csproj
+
+      - name: Build
+        run: >-
+          dotnet build
+          server/Services/ITF/ITF.Api/ITF.Api.csproj
+          --configuration Release
+          --no-restore
+
+      - name: Test
+        run: >-
+          dotnet test
+          server/Services/ITF/ITF.Tests/ITF.Tests.csproj
+          --no-restore
+          --verbosity minimal
+          --filter "FullyQualifiedName~ITF.Tests"
+        env:
+          ConnectionStrings__Postgres: "Host=database;Username=postgres;Password=postgres;Database=itf"
