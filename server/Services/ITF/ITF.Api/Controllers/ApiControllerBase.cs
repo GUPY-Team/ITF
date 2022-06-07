@@ -6,7 +6,6 @@ namespace ITF.Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
 public class ApiControllerBase : ControllerBase
 {
     private IMediator? _mediator;

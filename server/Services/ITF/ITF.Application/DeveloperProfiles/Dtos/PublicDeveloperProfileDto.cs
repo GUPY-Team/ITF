@@ -1,19 +1,22 @@
 ﻿using ITF.Domain.Enums;
-using MediatR;
 
-namespace ITF.Application.DeveloperProfiles.Commands;
+namespace ITF.Application.DeveloperProfiles.Dtos;
 
-public class UpdateDeveloperProfileCommand : IRequest
+public class PublicDeveloperProfileDto
 {
+    public Guid Id { get; set; }
+
     public string Position { get; set; } = null!;
     public int SalaryExpectation { get; set; }
     public int? HourlyRate { get; set; }
     public int? ExperienceInYears { get; set; }
     public string? City { get; set; }
-    public EnglishProficiency EnglishProficiency { get; set; }
+    public EnglishProficiency EnglishProficiency { get; set; } = EnglishProficiency.None;
     public string? ExperienceDescription { get; set; }
     public string? Expectations { get; set; }
     public string? Achievements { get; set; }
+
+    public bool IsActive { get; set; }
 
     public Guid DeveloperCategoryId { get; set; }
 

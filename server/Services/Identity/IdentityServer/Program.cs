@@ -22,9 +22,12 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
-    Log.Debug("Migrating database...");
-    await app.MigrateDatabase();
-    Log.Debug("Done migrating database.");
+    if (args.Contains("/migrate"))
+    {
+        Log.Debug("Migrating database...");
+        await app.MigrateDatabase();
+        Log.Debug("Done migrating database.");
+    }
 
     app.Run();
 }

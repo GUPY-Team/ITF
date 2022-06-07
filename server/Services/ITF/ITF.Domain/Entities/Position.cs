@@ -11,4 +11,7 @@ public class Position
     public string City { get; set; } = null!;
     public int? ExperienceInYears { get; set; }
     public List<WorkOption> WorkOptions { get; set; } = new();
+
+    public RecruiterProfile? RecruiterProfile { get; set; }
+    public Guid RecruiterProfileId { get; set; }
 }

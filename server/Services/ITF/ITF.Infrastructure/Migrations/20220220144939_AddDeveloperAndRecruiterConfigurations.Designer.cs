@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ITF.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ITF.Infrastructure.Migrations
 {
     [DbContext(typeof(ItfDbContext))]
-    partial class ItfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220220144939_AddDeveloperAndRecruiterConfigurations")]
+    partial class AddDeveloperAndRecruiterConfigurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

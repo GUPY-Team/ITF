@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace ITF.Application.DeveloperProfiles.Commands;
+namespace ITF.Application.MyDeveloperProfile.Commands;
 
-public class UpdateDeveloperContactsCommand : IRequest
+public class UpdateContactsCommand : IRequest
 {
     public string? FullName { get; set; }
     public string? Email { get; set; }
