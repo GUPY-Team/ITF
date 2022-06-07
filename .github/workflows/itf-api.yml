@@ -55,7 +55,6 @@ jobs:
           dotnet test
           server/Services/ITF/ITF.Tests/ITF.Tests.csproj
           --no-restore
-          --verbosity minimal
           --filter "FullyQualifiedName~ITF.Tests"
         env:
           ConnectionStrings__Postgres: "Host=database;Username=postgres;Password=postgres;Database=itf"
