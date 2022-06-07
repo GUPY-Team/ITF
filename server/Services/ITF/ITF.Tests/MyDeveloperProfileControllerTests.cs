@@ -31,11 +31,11 @@ public class DeveloperProfileControllerTests : IClassFixture<ItfWebApplicationFa
             })
             .CreateClientWithFakeAuth();
 
-        var result = await client.GetAsync("/my-developer-profile");
+        var result = await client.GetAsync("/developer-profiles/me");
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
         var profile = await result.Content.ReadFromJsonAsync<DeveloperProfileDto>();
         Assert.NotNull(profile);
-        Assert.Equal(user.DeveloperProfile.Id, profile.Id);
+        Assert.Equal(user.DeveloperProfile!.Id, profile!.Id);
     }
 }

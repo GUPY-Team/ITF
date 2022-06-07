@@ -13,7 +13,7 @@ on:
   workflow_dispatch: 
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
@@ -55,6 +55,5 @@ jobs:
           dotnet test
           server/Services/ITF/ITF.Tests/ITF.Tests.csproj
           --no-restore
-          --filter "FullyQualifiedName~ITF.Tests"
         env:
           ConnectionStrings__Postgres: "Host=database;Username=postgres;Password=postgres;Database=itf"

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ITF.Api.Controllers;
 
-[Route("my-developer-profile")]
+[Route("developer-profiles/me")]
 public class MyDeveloperProfileController : ApiControllerBase
 {
     [HttpGet]
