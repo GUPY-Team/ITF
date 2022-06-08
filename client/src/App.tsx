@@ -1,7 +1,7 @@
-import { Row, Col, Button } from "antd";
+import { Row, Col } from "antd";
 import {  Layout } from "antd";
 
-const {Header, Content, Footer} = Layout;
+const {Header, Content} = Layout;
 function App() {
   return (
     <Layout>
@@ -60,8 +60,8 @@ function App() {
           <Col span={8}>
             <Row justify="center">
             <span style={{ margin: "1rem"}}><img src="https://www.svgrepo.com/show/111199/instagram.svg" width={50} height={50} alt="" /></span>
-          <span style={{ margin: "1rem"}}><img src="https://www.svgrepo.com/show/354443/telegram.svg" width={50} height={50} alt="" /></span>
-          <span style={{ margin: "1rem"}}><img src="https://www.svgrepo.com/show/17588/mail.svg" width={50} height={50} alt="" /></span>
+            <span style={{ margin: "1rem"}}><img src="https://www.svgrepo.com/show/354443/telegram.svg" width={50} height={50} alt="" /></span>
+             <span style={{ margin: "1rem"}}><img src="https://www.svgrepo.com/show/17588/mail.svg" width={50} height={50} alt="" /></span>
       
             </Row>
           
