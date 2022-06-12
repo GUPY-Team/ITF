@@ -1,2 +1,7 @@
-﻿**/bin/
+﻿.git
+
+**/bin/
 **/obj/
+
+build
+node_modules
